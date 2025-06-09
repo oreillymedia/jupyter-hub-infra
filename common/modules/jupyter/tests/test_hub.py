@@ -62,6 +62,8 @@ def test_hub_login(hub_url):
         allow_redirects=True,
     )
     response.raise_for_status()
+    print(f"!!!!!!!!!TEST: response.status_code={response.status_code}")
+    print(f"!!!!!!!!!TEST: response.text={response.text}")
     assert response.url == (hub_url + "/hub/spawn"), f"unexpected response url: got {response.url}, expected {hub_url}/hub/spawn"
     print("JupyterHub login success.")
 
