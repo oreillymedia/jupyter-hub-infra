@@ -44,8 +44,6 @@ def test_hub_login(hub_url):
 
     username = data["hub"]["config"]["Authenticator"]["admin_users"][0]
     password = data["hub"]["config"]["DummyAuthenticator"]["password"]
-    print(f"!!!!!!!!!TEST: username={username}")
-    print(f"!!!!!!!!!TEST: password={password}")
     session = requests.Session()
 
     response = session.get(hub_url + "/hub/login")
@@ -62,8 +60,6 @@ def test_hub_login(hub_url):
         allow_redirects=True,
     )
     response.raise_for_status()
-    print(f"!!!!!!!!!TEST: response.status_code={response.status_code}")
-    print(f"!!!!!!!!!TEST: response.text={response.text}")
     assert response.url == (hub_url + "/hub/spawn"), f"unexpected response url: got {response.url}, expected {hub_url}/hub/spawn"
     print("JupyterHub login success.")
 
