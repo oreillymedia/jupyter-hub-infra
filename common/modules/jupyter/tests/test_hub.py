@@ -35,8 +35,8 @@ def test_api_root(hub_url):
 
 def test_hub_login(hub_url):
     """
-    Tests the hub dummy authenticator login credentials. Login credentials retrieve 
-    from /jupyter_config/config.yaml. After successfully login, user will be 
+    Tests the hub dummy authenticator login credentials. Login credentials retrieve
+    from /jupyter_config/config.yaml. After successfully login, user will be
     redirected to /hub/spawn.
     """
     with open(config_file, "r") as yaml_file:
