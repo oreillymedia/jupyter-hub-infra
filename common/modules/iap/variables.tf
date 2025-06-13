@@ -91,3 +91,9 @@ variable "members_allowlist" {
   type    = list(string)
   default = []
 }
+
+
+variable "annotate_k8s_backend_service" {
+  type = bool
+  default = true
+}

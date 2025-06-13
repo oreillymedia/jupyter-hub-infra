@@ -129,6 +129,8 @@ resource "helm_release" "iap" {
 }
 
 resource "kubernetes_annotations" "annotation" {
+
+  count = var.annotate_k8s_backend_service == true ? 1: 0
   api_version = "v1"
   kind        = "Service"
   metadata {
