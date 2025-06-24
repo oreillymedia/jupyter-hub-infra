@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,16 @@ variable "project_id" {
   description = "GCP project ID"
 }
 
-variable "namespace" {
+variable "cluster_name" {
   type        = string
-  description = "Kubernetes namespace where resources are deployed"
+  description = "Name of a target GKE cluster where the target application is deployed"
 }
+
+variable "cluster_location" {
+  type        = string
+  description = "Location of a target GKE cluster where the target application is deployed"
+}
+
 
 variable "app_name" {
   type        = string
@@ -31,26 +37,35 @@ variable "app_name" {
 variable "create_brand" {
   type        = bool
   description = "Create Brand OAuth Screen"
+  default     = false
 }
 
+variable "namespace" {
+  type        = string
+  description = "Kubernetes namespace where resources are deployed"
+}
 variable "k8s_ingress_name" {
   type        = string
   description = "Name for k8s Ingress"
+  default     = ""
 }
 
 variable "k8s_managed_cert_name" {
   type        = string
   description = "Name for k8s managed certificate"
+  default     = ""
 }
 
 variable "k8s_iap_secret_name" {
   type        = string
   description = "Name for k8s iap secret"
+  default     = ""
 }
 
 variable "k8s_backend_config_name" {
   type        = string
   description = "Name of the Kubernetes Backend Config"
+  default     = ""
 }
 
 variable "k8s_backend_service_name" {
@@ -91,4 +106,3 @@ variable "members_allowlist" {
   type    = list(string)
   default = []
 }
-
