@@ -45,7 +45,7 @@ resource "helm_release" "ray-cluster" {
       secret_name                       = var.db_secret_name
       cloudsql_instance_connection_name = local.cloudsql_instance_connection_name
       image                             = var.use_custom_image ? "us-central1-docker.pkg.dev/ai-on-gke/rag-on-gke/ray-image" : "rayproject/ray"
-      image_tag                         = var.enable_gpu ? "2.44.1-py312-gpu" : var.use_custom_image ? "2.44.1-py312-gpu" : "2.44.1-py312"
+      image_tag                         = var.enable_gpu ? var.use_custom_image ? "2.9.3-py310-gpu" : "2.44.1-py312-gpu" : "2.44.1-py312"
       resource_requests = var.enable_gpu ? {
         "cpu"               = "8"
         "memory"            = "32G"
@@ -237,4 +237,3 @@ module "iap_auth" {
     data.kubernetes_service.head-svc,
   ]
 }
-
