@@ -55,8 +55,10 @@ module "infrastructure" {
   create_cluster                       = true
 }
 
-# Configure Kubernetes provider to use the newly created cluster
+# Configure Kubernetes provider to use the newly created cluster.
+# We use the alias to differentiate it from jupyter.versions provider.
 provider "kubernetes" {
+  alias                  = "jupyter"
   host                   = "https://${module.infrastructure.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(module.infrastructure.ca_certificate)
@@ -64,11 +66,20 @@ provider "kubernetes" {
 
 # Configure Helm provider (required for JupyterHub installation)
 provider "helm" {
+  alias = "jupyter"
   kubernetes {
     host                   = "https://${module.infrastructure.endpoint}"
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(module.infrastructure.ca_certificate)
   }
+}
+
+resource "kubernetes_namespace" "jupyter" {
+  provider = kubernetes.jupyter
+  metadata {
+    name = var.jupyter_namespace
+  }
+  depends_on = [module.infrastructure]
 }
 
 # Step 2: Create GCS bucket for JupyterHub data
@@ -84,8 +95,11 @@ resource "google_storage_bucket" "jupyter_bucket" {
 module "jupyter" {
   source = "./common/modules/jupyter"
 
+  # Use the configured provider aliases. This ensures 
+  providers = { helm = helm.jupyter, kubernetes = kubernetes.jupyter }
+
   # Important: This ensures JupyterHub is only deployed after the cluster is ready
-  depends_on = [module.infrastructure]
+  depends_on = [module.infrastructure, kubernetes_namespace.jupyter]
 
   # Basic settings
   project_id        = var.project_id
@@ -109,19 +123,4 @@ module "jupyter" {
 
   # Resource settings
   ephemeral_storage = var.ephemeral_storage
-}
-
-# Output the command to get cluster credentials
-output "get_credentials_command" {
-  value = "gcloud container clusters get-credentials ${module.infrastructure.cluster.name} --region ${var.cluster_location} --project ${var.project_id}"
-}
-
-# Output the cluster endpoint
-output "cluster_endpoint" {
-  value = module.infrastructure.endpoint
-}
-
-# Output the JupyterHub access instructions
-output "jupyter_access" {
-  value = "To access JupyterHub, run: kubectl port-forward -n jupyter svc/proxy-public 8080:80 and visit http://localhost:8080"
 }
