@@ -73,8 +73,8 @@ scheduling:
 
 singleuser:
   memory:
-    limit: 4Gi
-    guarantee: 4Gi
+    limit: 8G
+    guarantee: 4G
   cpu:
     limit: 2
     guarantee: 1
@@ -98,8 +98,8 @@ singleuser:
   extraAnnotations:
     gke-gcsfuse/volumes: "true"
     gke-gcsfuse/cpu-limit: "1"
-    gke-gcsfuse/memory-limit: 2Gi
-    gke-gcsfuse/ephemeral-storage-limit: 10Gi
+    gke-gcsfuse/memory-limit: 2G
+    gke-gcsfuse/ephemeral-storage-limit: 10G
   serviceAccountName: ${k8s_service_account}
   # Configure csi for gcsfuse
   storage:
