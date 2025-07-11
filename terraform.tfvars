@@ -23,7 +23,7 @@ monitoring_enable_managed_prometheus = true
 # JupyterHub settings
 jupyter_namespace                 = "jupyter"
 workload_identity_service_account = "jupyter-sa"
-notebook_image                    = "jupyter/tensorflow-notebook"
+notebook_image                    = "jupyter/tensorflow-notebook" # default spawner image
 notebook_image_tag                = "python-3.10"
 ephemeral_storage                 = "5Gi"
 create_brand                      = false
