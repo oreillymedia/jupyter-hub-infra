@@ -56,15 +56,18 @@ module "infrastructure" {
 }
 
 # Configure Kubernetes provider to use the newly created cluster.
-# We use the alias to differentiate it from jupyter.versions provider.
+# We use an alias "jupyter" for this provider because:
+# - It avoids conflicts with the provider used inside the infrastructure module that created the GKE cluster
+# - It allows us to explicitly connect to the newly created cluster via its outputs (endpoint, certificate)
+# - It creates a dedicated provider instance specifically for JupyterHub deployment step.
 provider "kubernetes" {
   alias                  = "jupyter"
-  host                   = "https://${module.infrastructure.endpoint}"
+  host                   = "https://${module.infrastructure.endpoint}" # The GKE API server address
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(module.infrastructure.ca_certificate)
 }
 
-# Configure Helm provider (required for JupyterHub installation)
+# We use an alias for the Helm provider for the same reasons as above
 provider "helm" {
   alias = "jupyter"
   kubernetes {
@@ -74,15 +77,22 @@ provider "helm" {
   }
 }
 
+# Create a dedicated namespace for JupyterHub
 resource "kubernetes_namespace" "jupyter" {
   provider = kubernetes.jupyter
   metadata {
     name = var.jupyter_namespace
   }
+  # This depends_on ensures the cluster is fully created before we try to create resources in it
   depends_on = [module.infrastructure]
 }
 
 # Step 2: Create GCS bucket for JupyterHub data
+# This Google Cloud Storage bucket serves multiple purposes:
+# 1. Provides persistent storage for user notebooks and data
+# 2. Allows data to survive pod restarts and cluster upgrades
+# 3. Can be mounted into user containers using the GCS FUSE CSI driver
+# 4. Enables data sharing between different JupyterHub sessions
 resource "google_storage_bucket" "jupyter_bucket" {
   name          = "${var.project_id}-jupyter-data"
   location      = var.region
@@ -95,10 +105,9 @@ resource "google_storage_bucket" "jupyter_bucket" {
 module "jupyter" {
   source = "./common/modules/jupyter"
 
-  # Use the configured provider aliases. This ensures 
   providers = { helm = helm.jupyter, kubernetes = kubernetes.jupyter }
 
-  # Important: This ensures JupyterHub is only deployed after the cluster is ready
+
   depends_on = [module.infrastructure, kubernetes_namespace.jupyter]
 
   # Basic settings
