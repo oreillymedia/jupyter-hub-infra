@@ -25,5 +25,5 @@ output "jupyterhub_password" {
   sensitive = true
 }
 output "jupyterhub_ip_address" {
-  value = var.add_auth ? module.iap_auth[0].ip_address : ""
+  value = var.add_auth ? module.iap_auth[0].ip_address : data.kubernetes_service.proxy-public.status.0.load_balancer.0.ingress.0.ip
 }

@@ -132,4 +132,6 @@ module "jupyter" {
 
   # Resource settings
   ephemeral_storage = var.ephemeral_storage
+
+  load_balancer_source_ranges = var.load_balancer_source_ranges
 }

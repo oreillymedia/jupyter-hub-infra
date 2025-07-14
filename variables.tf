@@ -187,3 +187,9 @@ variable "support_email" {
   type        = string
   default     = "admin@example.com"
 }
+
+variable "load_balancer_source_ranges" {
+  type        = list(string)
+  description = "List of IP CIDR ranges that can access the LoadBalancer"
+  default     = []
+}

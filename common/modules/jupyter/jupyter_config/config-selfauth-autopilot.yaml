@@ -59,6 +59,7 @@ proxy:
       enabled: false
   service:
     type: ${service_type}
+    loadBalancerSourceRanges: ${load_balancer_source_ranges}
     annotations:
       beta.cloud.google.com/backend-config: '{"default": "${backend_config}"}'
   traefik:

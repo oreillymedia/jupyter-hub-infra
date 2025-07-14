@@ -19,6 +19,7 @@ deletion_protection                  = false
 gcs_fuse_csi_driver                  = true
 ray_addon_enabled                    = false
 monitoring_enable_managed_prometheus = true
+load_balancer_source_ranges          = ["34.29.249.148/32", "199.27.145.253/32"] # Oreilly VPN
 
 # JupyterHub settings
 jupyter_namespace                 = "jupyter"

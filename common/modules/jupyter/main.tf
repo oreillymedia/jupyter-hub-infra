@@ -119,7 +119,8 @@ resource "helm_release" "jupyterhub" {
     backend_config                    = var.k8s_backend_config_name
     service_name                      = var.k8s_backend_service_name
     authenticator_class               = var.add_auth ? "'gcpiapjwtauthenticator.GCPIAPAuthenticator'" : "dummy"
-    service_type                      = var.add_auth ? "NodePort" : "ClusterIP"
+    service_type                      = "LoadBalancer"
+    load_balancer_source_ranges       = jsonencode(var.load_balancer_source_ranges)
     gcs_bucket                        = var.gcs_bucket
     k8s_service_account               = var.workload_identity_service_account
     ephemeral_storage                 = var.ephemeral_storage
@@ -159,3 +160,10 @@ data "kubernetes_service" "jupyter" {
   depends_on = [module.iap_auth, helm_release.jupyterhub]
 }
 
+data "kubernetes_service" "proxy-public" {
+  metadata {
+    name      = "proxy-public"
+    namespace = var.namespace
+  }
+  depends_on = [helm_release.jupyterhub]
+}

@@ -54,7 +54,7 @@ output "jupyterhub_uri" {
   value       = module.jupyter.jupyterhub_uri
 }
 
-output "jupyterhub_ip_address" {
+output "jupyterhub_loadbalancer_ip" {
   description = "The IP address for accessing JupyterHub (if using IAP)"
   value       = module.jupyter.jupyterhub_ip_address
 }
