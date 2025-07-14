@@ -46,7 +46,11 @@ hub:
       password: ${password}
   networkPolicy:
     enabled: false
-
+  services:
+    notebook-launcher:
+      api_token: ${launcher_api_token}
+      admin: true
+    
 prePuller:
   hook:
     enabled: false

@@ -49,6 +49,13 @@ output "jupyterhub_password" {
   sensitive = true
 }
 
+output "jupyterhub_launcher_api_token" {
+  description = "The admin token used to launch JupyterHub notebooks"
+  value       = module.jupyter.jupyterhub_launcher_api_token
+  # Uncomment the line below if you want to hide the password from CLI output
+  sensitive = true
+}
+
 output "jupyterhub_uri" {
   description = "The URI for accessing JupyterHub (if using IAP)"
   value       = module.jupyter.jupyterhub_uri

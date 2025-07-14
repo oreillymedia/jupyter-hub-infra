@@ -100,6 +100,11 @@ resource "random_password" "generated_password" {
   special = false
 }
 
+resource "random_password" "jupyterhub_launcher_admin_token" {
+  length  = 32
+  special = false
+}
+
 resource "helm_release" "jupyterhub" {
   name             = "jupyterhub"
   repository       = "https://jupyterhub.github.io/helm-chart"
@@ -112,6 +117,7 @@ resource "helm_release" "jupyterhub" {
 
   values = var.autopilot_cluster ? [templatefile("${path.module}/jupyter_config/config-selfauth-autopilot.yaml", {
     password                          = var.add_auth ? "dummy" : random_password.generated_password[0].result
+    launcher_api_token                = random_password.jupyterhub_launcher_admin_token.result
     project_id                        = var.project_id
     project_number                    = data.google_project.project.number
     namespace                         = var.namespace
