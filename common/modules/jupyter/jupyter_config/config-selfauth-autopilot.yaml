@@ -154,9 +154,9 @@ singleuser:
       kubespawner_override:
         image: ${notebook_image}:${notebook_image_tag}
         extra_resource_limits:
-          nvidia.com/gpu: "2"
+          nvidia.com/gpu: "1"
         extra_resource_guarantees:
-          nvidia.com/gpu: "2"
+          nvidia.com/gpu: "1"
         node_selector:
           cloud.google.com/compute-class: "Accelerator"
           cloud.google.com/gke-accelerator: "nvidia-l4"
