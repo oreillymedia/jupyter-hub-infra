@@ -22,21 +22,9 @@
 # Chart default values:     https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/HEAD/jupyterhub/values.yaml
 # Available chart versions: https://jupyterhub.github.io/helm-chart/
 hub:
-  image:
-    name: us-docker.pkg.dev/ai-on-gke/jupyterhub-authentication-class/jupyter-auth-class
-    # This is the timestamp of the image, we should avoid using 'latest'
-    tag: 'sample-public-image-1741648202'
   labels:
     ${indent(4, chomp(jsonencode(additional_labels)))}
   config:
-    JupyterHub:
-      authenticator_class: ${authenticator_class}
-    GCPIAPAuthenticator:
-      header_name: 'X-Goog-IAP-JWT-Assertion'
-      project_id: '${project_id}'
-      namespace: '${namespace}'
-      service_name: '${service_name}'
-      project_number: '${project_number}'
     Authenticator:
       admin_users:
         - admin
@@ -44,6 +32,16 @@ hub:
         - user
     DummyAuthenticator:
       password: ${password}
+    KubeSpawner:
+      apply_user_options:
+        image: image
+        cpu_limit: cpu_limit
+        cpu_guarantee: cpu_guarantee
+        mem_limit: mem_limit
+        mem_guarantee: mem_guarantee
+        extra_resource_guarantees: extra_resource_guarantees 
+        node_selector: node_selector                         
+        debug_checkbox: debug_checkbox
   networkPolicy:
     enabled: false
   services:
@@ -156,7 +154,6 @@ singleuser:
               kubespawner_override:
                 default: true
       kubespawner_override:
-        image: ${notebook_image}:${notebook_image_tag}
         extra_resource_limits:
           nvidia.com/gpu: "1"
         extra_resource_guarantees:
